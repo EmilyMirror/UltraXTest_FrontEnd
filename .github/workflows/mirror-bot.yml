@@ -8,8 +8,8 @@ defaults:
     shell: bash
 
 env:
-  GitHubMail: "missemily.mirror@gmail.com"
-  GitHubName: "EmilyMirror" 
+  GitHubMail: ${{ secrets.GitHubMail }}
+  GitHubName: ${{ secrets.GitHubName }} 
   BRANCH: "main"
 
 jobs:
@@ -37,11 +37,13 @@ jobs:
           git config --global user.name ${GitHubName}
           git config --global credential.helper store
           echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
+      - name: Cleanup
+        # This takes much more time (around 42 minutes now) than that of Ubuntu
+        uses: rokibhasansagar/slimhub_actions@mac
       - name: Setup docker
         run: |
           brew install -f -q --cask virtualbox
           brew install -f -q --formula docker docker-machine
-          sudo "/Library/Application Support/VirtualBox/LaunchDaemons/VirtualBoxStartup.sh" restart
       - name: Setup VM
         run: |
           curl -sL https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso -o ~/Downloads/boot2docker.iso
