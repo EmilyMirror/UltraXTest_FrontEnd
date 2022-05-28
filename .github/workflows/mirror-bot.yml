@@ -1,4 +1,4 @@
-name: MacOS 10.15
+name: MacOS MirrorBot Workflow
 
 on:
   workflow_dispatch:
@@ -45,7 +45,7 @@ jobs:
       - name: Setup VM
         run: |
           curl -sL https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso -o ~/Downloads/boot2docker.iso
-          docker-machine create -d virtualbox --virtualbox-disk-size=982180 --virtualbox-memory=150135 --virtualbox-cpu-count=-2 --virtualbox-boot2docker-url ~/Downloads/boot2docker.iso default
+          docker-machine create -d virtualbox --virtualbox-disk-size=1282180 --virtualbox-memory=320270 --virtualbox-cpu-count=-4 --virtualbox-boot2docker-url ~/Downloads/boot2docker.iso default
           docker-machine env default
       - name: Clone Repository
         run: |
