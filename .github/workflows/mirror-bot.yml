@@ -1,4 +1,4 @@
-name: MacOS 10.15
+name: MacOS MirrorBot
 
 on:
   workflow_dispatch:
@@ -42,12 +42,21 @@ jobs:
         uses: rokibhasansagar/slimhub_actions@mac
       - name: Setup docker
         run: |
-          brew install -f -q --cask virtualbox@6.1.16
-          brew install -f -q --formula docker docker-machine
+          brew install -f -q --cask virtualbox
+          brew install -f -q --formula docker docker
+          curl -sL https://github.com/docker/machine/releases/download/v0.16.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+          chmod +x /tmp/docker-machine &&
+          sudo cp /tmp/docker-machine /usr/local/bin/docker-machine 
+          sudo launchctl load /Library/LaunchDaemons/org.virtualbox.startup.plist 
+          sudo modprobe vboxdrv
+
+          sudo modprobe vboxnetadp - (host only interface)
+
+          sudo modprobe vboxnetflt
       - name: Setup VM
         run: |
           curl -sL https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso -o ~/Downloads/boot2docker.iso
-          docker-machine create -d virtualbox --virtualbox-disk-size=322123 --virtualbox-memory=8096 --virtualbox-cpu-count=-1 --virtualbox-boot2docker-url ~/Downloads/boot2docker.iso default
+           docker-machine create -d virtualbox --virtualbox-disk-size=322123 --virtualbox-memory=8096 --virtualbox-cpu-count=-1 --virtualbox-hostonly-cidr 192.168.56.1/21 --virtualbox-boot2docker-url ~/Downloads/boot2docker.iso default
           docker-machine env default
       - name: Clone Repository
         run: |
